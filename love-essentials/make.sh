@@ -9,9 +9,6 @@ for i in $PATH_ARR
 do
   p2=$p1
   p1=$i
-  if [ "$pi" == "love-essentials" ]; then
-    break
-  fi
 done
 
 LOVE_ESS=.
