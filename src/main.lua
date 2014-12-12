@@ -1,32 +1,26 @@
-local x, y
-local incX, incY = true, true
+--[[ File requires ]]--
+require("player")
 
+local dTotalPrecise = 0
+local dTotalSeconds = 0
+local framesPerSecond = 60
+
+local player
 
 function love.load()
-  x = 0
-  y = 0
+  player = newPlayer(love.graphics.getWidth() / 2, love.graphics.getHeight() * 3 / 4)
 end
 
-function love.update()
-  if incX then
-    x = x + 1
-  else
-    x = x - 1
+function love.update(deltaTime)
+  dTotalPrecise = dTotalPrecise + deltaTime
+  if dTotalPrecise >= 1 then
+    dTotalPrecise = dTotalPrecise - 1
+    dTotalSeconds = dTotalSeconds + 1
   end
-  if incY then
-    y = y + 1
-  else
-    y = y - 1
-  end
-  
-  if ((x <= 0) or (x >= love.graphics.getWidth()))  then
-    incX = not incX
-  end
-  if ((y <= 0) or (y >= love.graphics.getHeight())) then
-    incY = not incY
-  end
+  framesPerSecond = 1 / deltaTime
 end
 
 function love.draw()
-  love.graphics.print("HELLO!", x, y)
+  love.graphics.print("Uptime: " .. dTotalSeconds .. " seconds\nFPS: " .. string.format("%d", framesPerSecond), 0, 0)
+  player:draw()
 end
