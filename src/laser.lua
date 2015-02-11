@@ -10,7 +10,7 @@ function laser:update(dt)
 end
 
 function laser:draw()
-  love.graphics.setColor(0, 0, 0)
+  love.graphics.setColor(255, 0, 0)
   love.graphics.line(self.startPoint.x, self.startPoint.y, self.endPoint.x, self.endPoint.y);
   love.graphics.setColor(255, 255, 255)
 end
