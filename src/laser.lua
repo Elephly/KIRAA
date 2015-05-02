@@ -15,11 +15,11 @@ function laser:draw()
   love.graphics.setColor(255, 255, 255)
 end
 
-function newLaser(player)
+function newLaser(orig, targ)
   local l = {
-    target = player,
+    target = targ,
     startPoint = { x = 0, y = 0 },
-    endPoint = { x = player.x, y = player.y },
+    endPoint = { x = targ.x, y = targ.y },
     update = laser.update,
     draw = laser.draw
   }
