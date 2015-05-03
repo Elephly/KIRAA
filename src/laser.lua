@@ -5,9 +5,9 @@ local laser = {
   target,
   line = {
     startPoint = { x, y },
-    endPoint = { x, y }
-  },
-  width
+    endPoint = { x, y },
+    width
+  }
 }
 
 function laser:update(dt)
@@ -17,7 +17,7 @@ end
 
 function laser:draw()
   local oldLineWidth = love.graphics.getLineWidth()
-  love.graphics.setLineWidth(self.width)
+  love.graphics.setLineWidth(self.line.width)
   love.graphics.setColor(255, 0, 0)
   love.graphics.line(self.line.startPoint.x, self.line.startPoint.y, self.line.endPoint.x, self.line.endPoint.y);
   love.graphics.setColor(255, 255, 255)
@@ -28,10 +28,10 @@ function newLaser(orig, targ, w)
   local l = {
     target = targ,
     line = {
-      startPoint = { x = 0, y = 0 },
-      endPoint = { x = targ.x, y = targ.y }
+      startPoint = { x = orig.x, y = orig.y },
+      endPoint = { x = targ.x, y = targ.y },
+      width = w
     },
-    width = w,
     update = laser.update,
     draw = laser.draw
   }

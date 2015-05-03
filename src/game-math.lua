@@ -40,9 +40,9 @@ function subtractVector2(vector1, vector2)
   return newVector
 end
 
-function lineToPolygon(line, width)
+function lineToPolygon(line)
   perpVec = perpendicularVector2(subtractVector2(line.endPoint, line.startPoint))
-  normalizeVector2(perpVec, width)
+  normalizeVector2(perpVec, line.width)
   polygon = {
     point1 = addVector2(line.startPoint, perpVec),
     point2 = subtractVector2(line.startPoint, perpVec),

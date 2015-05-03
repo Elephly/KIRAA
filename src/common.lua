@@ -1,3 +1,3 @@
 --[[ File requires ]]--
-require("game-engine")
 require("game-math")
+require("game-physics")

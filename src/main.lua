@@ -1,4 +1,5 @@
 --[[ File requires ]]--
+require("common")
 require("player")
 require("laser")
 
@@ -8,8 +9,12 @@ local framesPerSecond = 60
 
 function love.load()
   love.graphics.setBackgroundColor(255, 255, 255)
-  player = newPlayer(love.graphics.getWidth() / 2, love.graphics.getHeight() * 3 / 4)
-  laser = newLaser(0, player, 2)
+
+  world = love.physics.newWorld(0, 0, true)
+  world:setCallbacks(beginContact, endContact, preSolve, postSolve)
+
+  player = newPlayer(world, love.graphics.getWidth() / 2, love.graphics.getHeight() * 3 / 4)
+  laser = newLaser({x=100,y=100}, {x=300,y=300}, 2)
 end
 
 function love.update(deltaTime)
@@ -25,12 +30,14 @@ function love.update(deltaTime)
 
   player:update(deltaTime)
   laser:update(deltaTime)
+
+  world:update(deltaTime)
 end
 
 function love.draw()
   love.graphics.setColor(0, 0, 0)
   love.graphics.print(string.format("Uptime: %d seconds\nFPS: %d\nCollision: %s", dTotalSeconds,
-    framesPerSecond, tostring(collisionPolyCircle(lineToPolygon(laser.line, laser.width), player))), 0, 0)
+    framesPerSecond, tostring(collisionPolyCircle(lineToPolygon(laser.line), player))), 0, 0)
   love.graphics.setColor(255, 255, 255)
 
   player:draw()
