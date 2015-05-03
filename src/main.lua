@@ -6,12 +6,10 @@ local dTotalPrecise = 0
 local dTotalSeconds = 0
 local framesPerSecond = 60
 
-local player
-
 function love.load()
   love.graphics.setBackgroundColor(255, 255, 255)
   player = newPlayer(love.graphics.getWidth() / 2, love.graphics.getHeight() * 3 / 4)
-  laser = newLaser(0, player)
+  laser = newLaser(0, player, 2)
 end
 
 function love.update(deltaTime)
@@ -31,7 +29,8 @@ end
 
 function love.draw()
   love.graphics.setColor(0, 0, 0)
-  love.graphics.print("Uptime: " .. dTotalSeconds .. " seconds\nFPS: " .. string.format("%d", framesPerSecond), 0, 0)
+  love.graphics.print(string.format("Uptime: %d seconds\nFPS: %d\nCollision: %s", dTotalSeconds,
+    framesPerSecond, tostring(collisionPolyCircle(lineToPolygon(laser.line, laser.width), player))), 0, 0)
   love.graphics.setColor(255, 255, 255)
 
   player:draw()

@@ -1,3 +1,6 @@
+--[[ File requires ]]--
+require("common")
+
 local player = {
   x,
   y,
@@ -77,21 +80,5 @@ function handleInput(p)
   end
   if love.keyboard.isDown('s') then
     p.frameSpeed.y = p.frameSpeed.y + p.speed
-  end
-end
-
-function lerp(a,b,t)
-  return (((1 - t) * a) + (t * b))
-end
-
-function lerp2(a,b,t)
-  return (a + ((b - a) * t))
-end
-
-function normalizeVector2(vector, value)
-  local hyp = math.sqrt((vector.x * vector.x) + (vector.y * vector.y))
-  if hyp > 0 then
-    vector.x = vector.x / (hyp / value)
-    vector.y = vector.y / (hyp / value)
   end
 end
