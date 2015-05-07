@@ -9,9 +9,11 @@ function newLaser(world, origVec2, targVec2, force, wid, len)
     direction = normalizeVec2(subVec2(targVec2, origVec2), 1),
     width = wid,
     length = len,
+    userData = "Laser",
     update = laser.update,
     draw = laser.draw,
     getPosition = laser.getPosition,
+    getUserData = laser.getUserData,
     handleCollisionBegin = laser.handleCollisionBegin,
     handleCollisionEnd = laser.handleCollisionEnd,
     destroy = laser.destroy
@@ -48,14 +50,9 @@ end
 function laser:draw()
   if (self.alive) then
     local oldLineWidth = love.graphics.getLineWidth()
-    local x1, y1, x2, y2 = self.shape:getPoints()
-    x1 = self.body:getX() + x1
-    y1 = self.body:getY() + y1
-    x2 = self.body:getX() + x2
-    y2 = self.body:getY() + y2
     love.graphics.setLineWidth(self.width)
     love.graphics.setColor(255, 0, 0)
-    love.graphics.line(x1, y1, x2, y2);
+    love.graphics.line(self.body:getWorldPoints(self.shape:getPoints()))
     love.graphics.setColor(255, 255, 255)
     love.graphics.setLineWidth(oldLineWidth)
   end
@@ -63,6 +60,10 @@ end
 
 function laser:getPosition()
   return { x = self.body:getX(), y = self.body:getY() }
+end
+
+function laser:getUserData()
+  return self.userData
 end
 
 function laser:handleCollisionBegin(other)

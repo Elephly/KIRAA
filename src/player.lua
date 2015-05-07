@@ -7,9 +7,11 @@ function newPlayer(world, pos)
   local p = {
     alive = true,
     moveForce = 500,
+    userData = "Player",
     update = player.update,
     draw = player.draw,
     getPosition = player.getPosition,
+    getUserData = player.getUserData,
     handleInput = player.handleInput,
     handleCollisionBegin = player.handleCollisionBegin,
     handleCollisionEnd = player.handleCollisionEnd
@@ -71,6 +73,10 @@ end
 
 function player:getPosition()
   return { x = self.body:getX(), y = self.body:getY() }
+end
+
+function player:getUserData()
+  return self.userData
 end
 
 function player:handleInput()
