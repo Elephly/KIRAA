@@ -7,6 +7,6 @@ function edge(num)
   elseif num == 2 then return "right"
   elseif num == 3 then return "top"
   elseif num == 4 then return "bottom"
-  else return "nil"
+  else return nil
   end
 end
