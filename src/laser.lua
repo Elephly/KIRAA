@@ -1,39 +1,79 @@
 --[[ File requires ]]--
 require("common")
 
-local laser = {
-  target,
-  line = {
-    startPoint = { x, y },
-    endPoint = { x, y },
-    width
+local laser = {}
+
+function newLaser(world, origVec2, targVec2, force, wid, len)
+  local l = {
+    alive = true,
+    direction = normalizeVec2(subVec2(targVec2, origVec2), 1),
+    width = wid,
+    length = len,
+    update = laser.update,
+    draw = laser.draw,
+    getPosition = laser.getPosition,
+    handleCollisionBegin = laser.handleCollisionBegin,
+    handleCollisionEnd = laser.handleCollisionEnd,
+    destroy = laser.destroy
   }
-}
+  local midPoint = midVec2(origVec2, addVec2(origVec2, multByConstVec2(l.direction, -l.length)))
+  l.initialForce = {
+    x = l.direction.x * force * 100,
+    y = l.direction.y * force * 100
+  }
+  l.body = love.physics.newBody(world, midPoint.x, midPoint.y, "dynamic")
+  l.body:setMass(0)
+  l.shape = love.physics.newEdgeShape(-subVec2(midPoint, origVec2).x,
+    -subVec2(midPoint, origVec2).y, subVec2(midPoint, origVec2).x,
+    subVec2(midPoint, origVec2).y)
+  l.fixture = love.physics.newFixture(l.body, l.shape)
+  l.fixture:setUserData(l)
+  l.body:applyLinearImpulse(l.initialForce.x, l.initialForce.y)
+  return l
+end
 
 function laser:update(dt)
-  self.line.endPoint.x = self.target.x
-  self.line.endPoint.y = self.target.y
+  if self.alive then
+    local tailCheckVec = addVec2(self:getPosition(), multByConstVec2(self.direction, -self.length))
+    if self.direction.x > 0 and tailCheckVec.x > love.graphics.getWidth() or
+      self.direction.x < 0 and tailCheckVec.x < 0  or
+      self.direction.y > 0 and tailCheckVec.y > love.graphics.getHeight() or
+      self.direction.y < 0 and tailCheckVec.y < 0 then
+      self:destroy()
+    end
+  end
+  return self.alive
 end
 
 function laser:draw()
-  local oldLineWidth = love.graphics.getLineWidth()
-  love.graphics.setLineWidth(self.line.width)
-  love.graphics.setColor(255, 0, 0)
-  love.graphics.line(self.line.startPoint.x, self.line.startPoint.y, self.line.endPoint.x, self.line.endPoint.y);
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.setLineWidth(oldLineWidth)
+  if (self.alive) then
+    local oldLineWidth = love.graphics.getLineWidth()
+    local x1, y1, x2, y2 = self.shape:getPoints()
+    x1 = self.body:getX() + x1
+    y1 = self.body:getY() + y1
+    x2 = self.body:getX() + x2
+    y2 = self.body:getY() + y2
+    love.graphics.setLineWidth(self.width)
+    love.graphics.setColor(255, 0, 0)
+    love.graphics.line(x1, y1, x2, y2);
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.setLineWidth(oldLineWidth)
+  end
 end
 
-function newLaser(orig, targ, w)
-  local l = {
-    target = targ,
-    line = {
-      startPoint = { x = orig.x, y = orig.y },
-      endPoint = { x = targ.x, y = targ.y },
-      width = w
-    },
-    update = laser.update,
-    draw = laser.draw
-  }
-  return l
+function laser:getPosition()
+  return { x = self.body:getX(), y = self.body:getY() }
+end
+
+function laser:handleCollisionBegin(other)
+  self:destroy()
+end
+
+function laser:handleCollisionEnd(other)
+
+end
+
+function laser:destroy()
+  self.alive = false
+  self.body:destroy()
 end
