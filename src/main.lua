@@ -62,7 +62,7 @@ function love.update(deltaTime)
     end
     laserSpawnTimeElapsed = laserSpawnTimeElapsed - laserSpawnTime
   end
-  for i = table.getn(lasers), 1, -1 do
+  for i = #lasers, 1, -1 do
     if not lasers[i]:update(deltaTime) then
       table.remove(lasers, i)
     end
@@ -74,11 +74,11 @@ end
 function love.draw()
   love.graphics.setColor(0, 0, 0)
   love.graphics.print(string.format("Uptime: %d seconds\nFPS: %d\nLasers: %d",
-    dTotalSeconds, framesPerSecond, table.getn(lasers)), 0, 0)
+    dTotalSeconds, framesPerSecond, #lasers), 0, 0)
   love.graphics.setColor(255, 255, 255)
 
   player:draw()
-  for i = 1, table.getn(lasers) do
+  for i = 1, #lasers do
     lasers[i]:draw()
   end
 end

@@ -15,8 +15,8 @@ function beginContact(a, b, coll)
     x,y = coll:getNormal()
     text = a:getUserData().." colliding with "..b:getUserData().." with a vector normal of: "..x..", "..y
     ]]--
-  a:getUserData():handleCollisionBegin(b:getUserData())
-  b:getUserData():handleCollisionBegin(a:getUserData())
+  a:getUserData():handleCollisionBegin(b:getUserData(), coll)
+  b:getUserData():handleCollisionBegin(a:getUserData(), coll)
 end
 
 function endContact(a, b, coll)
@@ -24,8 +24,8 @@ function endContact(a, b, coll)
     persisting = 0
     text = text.."\n"..a:getUserData().." uncolliding with "..b:getUserData()
     ]]--
-  a:getUserData():handleCollisionEnd(b:getUserData())
-  b:getUserData():handleCollisionEnd(a:getUserData())
+  a:getUserData():handleCollisionEnd(b:getUserData(), coll)
+  b:getUserData():handleCollisionEnd(a:getUserData(), coll)
 end
 
 function preSolve(a, b, coll)
@@ -37,7 +37,11 @@ function preSolve(a, b, coll)
     end
     persisting = persisting + 1    -- keep track of how many updates they've been touching for
     ]]--
+  a:getUserData():handleCollisionPreSolve(b:getUserData(), coll)
+  b:getUserData():handleCollisionPreSolve(a:getUserData(), coll)
 end
 
 function postSolve(a, b, coll, normalimpulse1, tangentimpulse1, normalimpulse2, tangentimpulse2)
+  a:getUserData():handleCollisionPostSolve(b:getUserData(), coll)
+  b:getUserData():handleCollisionPostSolve(a:getUserData(), coll)
 end

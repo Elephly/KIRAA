@@ -1,22 +1,16 @@
 --[[ File requires ]]--
 require("common")
+require("entity")
 
 local player = {}
 
 function newPlayer(world, pos)
-  local p = {
-    alive = true,
-    moveForce = 500,
-    userData = "Player",
-    update = player.update,
-    draw = player.draw,
-    getPosition = player.getPosition,
-    getUserData = player.getUserData,
-    handleInput = player.handleInput,
-    handleCollisionBegin = player.handleCollisionBegin,
-    handleCollisionEnd = player.handleCollisionEnd
-  }
-  p.body = love.physics.newBody(world, pos.x, pos.y, "dynamic")
+  local p = newEntity(world, pos)
+  p.moveForce = 500
+  p:setUserData("Player")
+  p.update = player.update
+  p.draw = player.draw
+  p.handleInput = player.handleInput
   p.body:setLinearDamping(4)
   p.body:setMass(10)
   p.shape = love.physics.newCircleShape(8)
@@ -71,14 +65,6 @@ function player:draw()
   end
 end
 
-function player:getPosition()
-  return { x = self.body:getX(), y = self.body:getY() }
-end
-
-function player:getUserData()
-  return self.userData
-end
-
 function player:handleInput()
   if love.keyboard.isDown('a') then
     self.body:applyForce(-self.moveForce, 0)
@@ -92,12 +78,4 @@ function player:handleInput()
   if love.keyboard.isDown('s') then
     self.body:applyForce(0, self.moveForce)
   end
-end
-
-function player:handleCollisionBegin(other)
-
-end
-
-function player:handleCollisionEnd(other)
-
 end

@@ -1,29 +1,24 @@
 --[[ File requires ]]--
 require("common")
+require("entity")
 
 local laser = {}
 
 function newLaser(world, origVec2, targVec2, force, wid, len)
-  local l = {
-    alive = true,
-    direction = normalizeVec2(subVec2(targVec2, origVec2), 1),
-    width = wid,
-    length = len,
-    userData = "Laser",
-    update = laser.update,
-    draw = laser.draw,
-    getPosition = laser.getPosition,
-    getUserData = laser.getUserData,
-    handleCollisionBegin = laser.handleCollisionBegin,
-    handleCollisionEnd = laser.handleCollisionEnd,
-    destroy = laser.destroy
-  }
-  local midPoint = midVec2(origVec2, addVec2(origVec2, multByConstVec2(l.direction, -l.length)))
+  local direction = normalizeVec2(subVec2(targVec2, origVec2), 1)
+  local midPoint = midVec2(origVec2, addVec2(origVec2, multByConstVec2(direction, -len)))
+  local l = newEntity(world, { x = midPoint.x, y = midPoint.y })
+  l.direction = direction
+  l.width = wid
+  l.length = len
+  l:setUserData("Laser")
+  l.update = laser.update
+  l.draw = laser.draw
+  l.handleCollisionBegin = laser.handleCollisionBegin
   l.initialForce = {
     x = l.direction.x * force * 100,
     y = l.direction.y * force * 100
   }
-  l.body = love.physics.newBody(world, midPoint.x, midPoint.y, "dynamic")
   l.body:setMass(0)
   l.shape = love.physics.newEdgeShape(-subVec2(midPoint, origVec2).x,
     -subVec2(midPoint, origVec2).y, subVec2(midPoint, origVec2).x,
@@ -58,23 +53,6 @@ function laser:draw()
   end
 end
 
-function laser:getPosition()
-  return { x = self.body:getX(), y = self.body:getY() }
-end
-
-function laser:getUserData()
-  return self.userData
-end
-
-function laser:handleCollisionBegin(other)
+function laser:handleCollisionBegin(other, collData)
   self:destroy()
-end
-
-function laser:handleCollisionEnd(other)
-
-end
-
-function laser:destroy()
-  self.alive = false
-  self.body:destroy()
 end
