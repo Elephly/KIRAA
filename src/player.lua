@@ -5,7 +5,7 @@ require("entity")
 local player = {}
 
 function newPlayer(world, pos)
-  local p = newEntity(world, pos)
+  local p = newEntity(world, pos, 100)
   p.moveForce = 500
   p:setUserData("Player")
   p.update = player.update

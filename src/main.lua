@@ -11,7 +11,7 @@ local world
 local player
 local lasers
 local laserSpawnTimeElapsed = 0
-local laserSpawnTime = 0.001
+local laserSpawnTime = 1
 
 function love.load()
   love.graphics.setBackgroundColor(255, 255, 255)
@@ -43,22 +43,22 @@ function love.update(deltaTime)
       local lx = 0
       local ly = love.math.random(love.graphics.getHeight())
       table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 2, 30))
+        player:getPosition(), 5, 5, 2, 30))
     elseif edge(e) == "right" then
       local lx = love.graphics.getWidth()
       local ly = love.math.random(love.graphics.getHeight())
       table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 2, 30))
+        player:getPosition(), 5, 5, 2, 30))
     elseif edge(e) == "top" then
       local lx = love.math.random(love.graphics.getWidth())
       local ly = 0
       table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 2, 30))
+        player:getPosition(), 5, 5, 2, 30))
     elseif edge(e) == "bottom" then
       local lx = love.math.random(love.graphics.getWidth())
       local ly = love.graphics.getHeight()
       table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 2, 30))
+        player:getPosition(), 5, 5, 2, 30))
     end
     laserSpawnTimeElapsed = laserSpawnTimeElapsed - laserSpawnTime
   end

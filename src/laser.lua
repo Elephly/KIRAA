@@ -4,17 +4,17 @@ require("entity")
 
 local laser = {}
 
-function newLaser(world, origVec2, targVec2, force, wid, len)
+function newLaser(world, origVec2, targVec2, hp, force, wid, len)
   local direction = normalizeVec2(subVec2(targVec2, origVec2), 1)
   local midPoint = midVec2(origVec2, addVec2(origVec2, multByConstVec2(direction, -len)))
-  local l = newEntity(world, { x = midPoint.x, y = midPoint.y })
+  local l = newEntity(world, { x = midPoint.x, y = midPoint.y }, hp)
   l.direction = direction
   l.width = wid
   l.length = len
   l:setUserData("Laser")
   l.update = laser.update
   l.draw = laser.draw
-  l.handleCollisionBegin = laser.handleCollisionBegin
+  l.handleCollisionPreSolve = laser.handleCollisionPreSolve
   l.initialForce = {
     x = l.direction.x * force * 100,
     y = l.direction.y * force * 100
@@ -53,6 +53,11 @@ function laser:draw()
   end
 end
 
-function laser:handleCollisionBegin(other, collData)
-  self:destroy()
+function laser:handleCollisionPreSolve(other, collData)
+  if other:getUserData() == "Player" then
+    self:dealDamage(1)
+    if self:getHealth() <= 0 then
+      self:destroy()
+    end
+  end
 end
