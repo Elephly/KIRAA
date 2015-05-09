@@ -15,6 +15,7 @@ function newPlayer(world, pos)
   p.body:setMass(10)
   p.shape = love.physics.newCircleShape(8)
   p.fixture = love.physics.newFixture(p.body, p.shape)
+  p.fixture:setCategory(category.player)
   p.fixture:setUserData(p)
   return p
 end

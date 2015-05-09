@@ -24,6 +24,8 @@ function newLaser(world, origVec2, targVec2, hp, force, wid, len)
     -subVec2(midPoint, origVec2).y, subVec2(midPoint, origVec2).x,
     subVec2(midPoint, origVec2).y)
   l.fixture = love.physics.newFixture(l.body, l.shape)
+  l.fixture:setCategory(category.laser)
+  l.fixture:setMask(category.laser)
   l.fixture:setUserData(l)
   l.body:applyLinearImpulse(l.initialForce.x, l.initialForce.y)
   return l
@@ -45,7 +47,7 @@ end
 function laser:draw()
   if (self.alive) then
     local oldLineWidth = love.graphics.getLineWidth()
-    love.graphics.setLineWidth(self.width)
+    love.graphics.setLineWidth(self.width * (self:getHealth() / self:getMaxHealth()))
     love.graphics.setColor(255, 0, 0)
     love.graphics.line(self.body:getWorldPoints(self.shape:getPoints()))
     love.graphics.setColor(255, 255, 255)

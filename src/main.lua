@@ -1,7 +1,7 @@
 --[[ File requires ]]--
 require("common")
 require("player")
-require("laser")
+require("laser-spawner")
 
 local dTotalPrecise = 0
 local dTotalSeconds = 0
@@ -9,9 +9,7 @@ local framesPerSecond = 60
 
 local world
 local player
-local lasers
-local laserSpawnTimeElapsed = 0
-local laserSpawnTime = 1
+local laserSpawner
 
 function love.load()
   love.graphics.setBackgroundColor(255, 255, 255)
@@ -20,7 +18,7 @@ function love.load()
   world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
   player = newPlayer(world, {x=love.graphics.getWidth() / 2, y=love.graphics.getHeight() * 2 / 3})
-  lasers = {}
+  laserSpawner = newLaserSpawner(world, player)
 end
 
 function love.update(deltaTime)
@@ -35,38 +33,10 @@ function love.update(deltaTime)
   framesPerSecond = 1 / deltaTime
 
   player:update(deltaTime)
-
-  laserSpawnTimeElapsed = laserSpawnTimeElapsed + deltaTime
-  if laserSpawnTimeElapsed >= laserSpawnTime then
-    local e = love.math.random(4)
-    if edge(e) == "left" then
-      local lx = 0
-      local ly = love.math.random(love.graphics.getHeight())
-      table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 5, 2, 30))
-    elseif edge(e) == "right" then
-      local lx = love.graphics.getWidth()
-      local ly = love.math.random(love.graphics.getHeight())
-      table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 5, 2, 30))
-    elseif edge(e) == "top" then
-      local lx = love.math.random(love.graphics.getWidth())
-      local ly = 0
-      table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 5, 2, 30))
-    elseif edge(e) == "bottom" then
-      local lx = love.math.random(love.graphics.getWidth())
-      local ly = love.graphics.getHeight()
-      table.insert(lasers, newLaser(world, { x = lx, y = ly },
-        player:getPosition(), 5, 5, 2, 30))
-    end
-    laserSpawnTimeElapsed = laserSpawnTimeElapsed - laserSpawnTime
+  if laserSpawner:getPattern() == nil then
+    laserSpawner:setPattern(1)
   end
-  for i = #lasers, 1, -1 do
-    if not lasers[i]:update(deltaTime) then
-      table.remove(lasers, i)
-    end
-  end
+  laserSpawner:update(deltaTime)
 
   world:update(deltaTime)
 end
@@ -74,11 +44,9 @@ end
 function love.draw()
   love.graphics.setColor(0, 0, 0)
   love.graphics.print(string.format("Uptime: %d seconds\nFPS: %d\nLasers: %d",
-    dTotalSeconds, framesPerSecond, #lasers), 0, 0)
+    dTotalSeconds, framesPerSecond, #laserSpawner:getLasers()), 0, 0)
   love.graphics.setColor(255, 255, 255)
 
   player:draw()
-  for i = 1, #lasers do
-    lasers[i]:draw()
-  end
+  laserSpawner:draw()
 end
