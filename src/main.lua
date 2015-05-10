@@ -2,6 +2,7 @@
 require("common")
 require("player")
 require("laser-spawner")
+require("music-manager")
 
 local dTotalPrecise = 0
 local dTotalSeconds = 0
@@ -10,6 +11,7 @@ local framesPerSecond = 60
 local world
 local player
 local laserSpawner
+local musicManager
 
 function love.load()
   love.graphics.setBackgroundColor(255, 255, 255)
@@ -18,7 +20,11 @@ function love.load()
   world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
   player = newPlayer(world, {x=love.graphics.getWidth() / 2, y=love.graphics.getHeight() * 2 / 3})
+
   laserSpawner = newLaserSpawner(world, player)
+
+  musicManager = newMusicManager()
+  love.audio.play(musicManager.introSong)
 end
 
 function love.update(deltaTime)

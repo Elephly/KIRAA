@@ -2,6 +2,10 @@
 require("game-math")
 require("game-physics")
 
+RESOURCE_DIR = "Resources/"
+AUDIO_DIR = "Resources/Audio/"
+MUSIC_DIR = "Resources/Audio/Music/"
+
 category = {
   player = 1,
   laser = 2,
