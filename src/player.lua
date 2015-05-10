@@ -5,11 +5,13 @@ require("entity")
 local player = {}
 
 function newPlayer(world, pos)
-  local p = newEntity(world, pos, 100)
+  local p = newEntity(world, pos, 10)
   p.moveForce = 500
   p:setUserData("Player")
   p.update = player.update
   p.draw = player.draw
+  p.destroy = player.destroy
+  p.handleCollisionPreSolve = player.handleCollisionPreSolve
   p.handleInput = player.handleInput
   p.body:setLinearDamping(4)
   p.body:setMass(10)
@@ -36,10 +38,11 @@ function player:update(dt)
       self.body:setY(self.body:getY() + love.graphics.getHeight())
     end
   end
+  return self.alive
 end
 
 function player:draw()
-  if (self.alive) then
+  --if (self.alive) then
     love.graphics.setColor(0, 0, 0)
 
     love.graphics.circle("fill", self.body:getX(), self.body:getY(), self.shape:getRadius(), 24)
@@ -63,6 +66,19 @@ function player:draw()
       self.body:getY() + love.graphics.getHeight(), self.shape:getRadius(), 24)
 
     love.graphics.setColor(255, 255, 255)
+  --end
+end
+
+function player:destroy()
+  self.alive = false
+end
+
+function player:handleCollisionPreSolve(other, collData)
+  if other:getUserData() == "Laser" then
+    self:dealDamage(other:getDamage())
+    if self:getHealth() <= 0 then
+      self:destroy()
+    end
   end
 end
 

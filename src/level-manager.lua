@@ -1,0 +1,2 @@
+--[[ File requires ]]--
+require("common")

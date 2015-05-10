@@ -4,16 +4,18 @@ require("entity")
 
 local laser = {}
 
-function newLaser(world, origVec2, targVec2, hp, force, wid, len)
+function newLaser(world, origVec2, targVec2, hp, force, wid, len, dam)
   local direction = normalizeVec2(subVec2(targVec2, origVec2), 1)
   local midPoint = midVec2(origVec2, addVec2(origVec2, multByConstVec2(direction, -len)))
   local l = newEntity(world, { x = midPoint.x, y = midPoint.y }, hp)
   l.direction = direction
   l.width = wid
   l.length = len
+  l.damage = dam
   l:setUserData("Laser")
   l.update = laser.update
   l.draw = laser.draw
+  l.getDamage = laser.getDamage
   l.handleCollisionPreSolve = laser.handleCollisionPreSolve
   l.initialForce = {
     x = l.direction.x * force * 100,
@@ -53,6 +55,10 @@ function laser:draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.setLineWidth(oldLineWidth)
   end
+end
+
+function laser:getDamage()
+  return self.damage
 end
 
 function laser:handleCollisionPreSolve(other, collData)

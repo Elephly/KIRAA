@@ -5,16 +5,17 @@ require("laser")
 --[[ Laser Types ]]--
 weakLaser = {
   health = 3,
-  force = 1,
+  force = 5,
   width = 2,
   length = 50,
+  damage = 1,
 }
 
 --[[ Pattern Types ]]--
 patterns = {
   weakLaserTarget = {
     laserType = weakLaser,
-    laserSpawnTime = 1,
+    laserSpawnTime = 0.5,
     laserSpawnTimeElapsed = 0,
     minLevel = 1,
     maxLevel = 5,
@@ -81,7 +82,7 @@ end
 
 function laserSpawner:spawnNew(laserType, orig, targ)
   table.insert(self.lasers, newLaser(self.world, orig, targ, laserType.health,
-    laserType.force, laserType.width, laserType.length))
+    laserType.force, laserType.width, laserType.length, laserType.damage))
 end
 
 function laserSpawner:update(dt)

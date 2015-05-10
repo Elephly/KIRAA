@@ -3,8 +3,8 @@ require("game-math")
 require("game-physics")
 
 RESOURCE_DIR = "Resources/"
-AUDIO_DIR = "Resources/Audio/"
-MUSIC_DIR = "Resources/Audio/Music/"
+AUDIO_DIR = RESOURCE_DIR.."Audio/"
+MUSIC_DIR = AUDIO_DIR.."Music/"
 
 category = {
   player = 1,
