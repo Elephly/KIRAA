@@ -40,21 +40,21 @@ function love.update(deltaTime)
 
   musicManager:update(deltaTime)
 
-  if player:update(deltaTime) then
-    if laserSpawner:getPattern() == nil then
-      laserSpawner:setPattern(1)
-    end
-    laserSpawner:update(deltaTime)
-  else
+  local worldDeltaTime = deltaTime
+
+  if not player:update(deltaTime) then
     if not musicManager:isPlaying(musicManager.gameOverSong) then
       musicManager:playSong(musicManager.gameOverSong, false, 4, 0, 0, 0)
-      for i, v in ipairs(world:getBodyList()) do
-        v:setLinearDamping(1)
-      end
     end
+    worldDeltaTime = worldDeltaTime / 8
   end
 
-  world:update(deltaTime)
+  if laserSpawner:getPattern() == nil then
+    laserSpawner:setPattern(1)
+  end
+  laserSpawner:update(deltaTime)
+
+  world:update(worldDeltaTime)
 end
 
 function love.draw()

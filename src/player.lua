@@ -25,18 +25,18 @@ end
 function player:update(dt)
   if (self.alive) then
     self:handleInput()
-    if self.body:getX() > love.graphics.getWidth() then
-      self.body:setX(self.body:getX() - love.graphics.getWidth())
-    end
-    if self.body:getX() < 0 then
-      self.body:setX(self.body:getX() + love.graphics.getWidth())
-    end
-    if self.body:getY() > love.graphics.getHeight() then
-      self.body:setY(self.body:getY() - love.graphics.getHeight())
-    end
-    if self.body:getY() < 0 then
-      self.body:setY(self.body:getY() + love.graphics.getHeight())
-    end
+  end
+  if self.body:getX() > love.graphics.getWidth() then
+    self.body:setX(self.body:getX() - love.graphics.getWidth())
+  end
+  if self.body:getX() < 0 then
+    self.body:setX(self.body:getX() + love.graphics.getWidth())
+  end
+  if self.body:getY() > love.graphics.getHeight() then
+    self.body:setY(self.body:getY() - love.graphics.getHeight())
+  end
+  if self.body:getY() < 0 then
+    self.body:setY(self.body:getY() + love.graphics.getHeight())
   end
   return self.alive
 end
