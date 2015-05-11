@@ -24,7 +24,7 @@ function love.load()
   laserSpawner = newLaserSpawner(world, player)
 
   musicManager = newMusicManager()
-  musicManager:playSong(musicManager.gameSong1, true, 0, 0)
+  musicManager:playSong(musicManager.gameSong1, true, 0, 0, 0, 0)
 end
 
 function love.update(deltaTime)
@@ -48,8 +48,8 @@ function love.update(deltaTime)
 
     world:update(deltaTime)
   else
-    if not musicManager.gameOverSong:isPlaying() then
-      musicManager:playSong(musicManager.gameOverSong, false, 10, 0)
+    if not musicManager:isPlaying(musicManager.gameOverSong) then
+      musicManager:playSong(musicManager.gameOverSong, false, 4, 0, 0, 0)
     end
   end
 end

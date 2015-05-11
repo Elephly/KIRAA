@@ -18,54 +18,64 @@ function newMusicManager()
     currentSong,
     nextSong,
     fadeOutTime,
+    fadeOutDelay,
     fadeInTime,
+    fadeInDelay,
     elapsedTransitionTime,
 
     --Methods
+    isPlaying = musicManager.isPlaying,
     playSong = musicManager.playSong,
     update = musicManager.update,
   }
   return mm
 end
 
-function musicManager:playSong(source, looping, fadeOutTime, fadeInTime)
+function musicManager:playSong(source, looping, fadeOutTime, fadeOutDelay, fadeInTime, fadeInDelay)
   self.nextSong = source
   self.nextSong:setLooping(looping)
   self.fadeOutTime = fadeOutTime
+  self.fadeOutDelay = fadeOutDelay
   self.fadeInTime = fadeInTime
+  self.fadeInDelay = fadeInDelay
   self.elapsedTransitionTime = 0
 end
 
 function musicManager:update(dt)
   self.elapsedTransitionTime = self.elapsedTransitionTime + dt
-  if self.nextSong then
+  if self.nextSong and self.elapsedTransitionTime >= self.fadeInDelay then
     if not self.nextSong:isPlaying() then
       self.nextSong:play()
     end
-    if self.elapsedTransitionTime < self.fadeInTime then
-      self.nextSong:setVolume(self.elapsedTransitionTime / self.fadeInTime)
+    if (self.elapsedTransitionTime - self.fadeInDelay) < self.fadeInTime then
+      self.nextSong:setVolume((self.elapsedTransitionTime - self.fadeInDelay) /
+        self.fadeInTime)
     else
-      if self.currentSong then
-        self.nextSong:setVolume(1)
-        if self.elapsedTransitionTime >= self.fadeOutTime then
-          self.nextSong = nil
-        end
+      self.nextSong:setVolume(1)
+      if self.currentSong == self.nextSong then
+        self.nextSong = nil
       end
     end
   end
-  if self.currentSong then
+  if self.currentSong and self.elapsedTransitionTime >= self.fadeOutDelay then
     if self.nextSong then
-      if self.elapsedTransitionTime < self.fadeOutTime then
-        self.currentSong:setVolume((self.fadeOutTime - self.elapsedTransitionTime) /
-          self.fadeOutTime)
+      if (self.elapsedTransitionTime - self.fadeOutDelay) < self.fadeOutTime then
+        self.currentSong:setVolume((self.fadeOutTime - (self.elapsedTransitionTime -
+          self.fadeOutDelay)) / self.fadeOutTime)
       else
         self.currentSong:stop()
         self.currentSong = nil
       end
     end
   else
-    if self.nextSong and self.elapsedTransitionTime >= self.fadeInTime then
+    if self.nextSong and (self.elapsedTransitionTime - self.fadeInDelay) >=
+      self.fadeInTime and (self.elapsedTransitionTime - self.fadeOutDelay) >=
+      self.fadeOutTime then
       self.currentSong = self.nextSong
     end
   end
+end
+
+function musicManager:isPlaying(source)
+  return self.currentSong == source or self.nextSong == source
 end
