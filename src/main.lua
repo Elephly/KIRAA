@@ -45,21 +45,19 @@ function love.update(deltaTime)
       laserSpawner:setPattern(1)
     end
     laserSpawner:update(deltaTime)
-
-    world:update(deltaTime)
   else
     if not musicManager:isPlaying(musicManager.gameOverSong) then
       musicManager:playSong(musicManager.gameOverSong, false, 4, 0, 0, 0)
+      for i, v in ipairs(world:getBodyList()) do
+        v:setLinearDamping(1)
+      end
     end
   end
+
+  world:update(deltaTime)
 end
 
 function love.draw()
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.print(string.format("Uptime: %d seconds\nFPS: %d\nLasers: %d",
-    dTotalSeconds, framesPerSecond, #laserSpawner:getLasers()), 0, 0)
-  love.graphics.setColor(255, 255, 255)
-
   player:draw()
   laserSpawner:draw()
 end
