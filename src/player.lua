@@ -6,6 +6,7 @@ local player = {}
 
 function newPlayer(world, pos)
   local p = newEntity(world, pos, 10)
+  p.directionalForce = { x = 0, y = 0 }
   p.moveForce = 500
   p:setUserData("Player")
   p.update = player.update
@@ -24,7 +25,10 @@ end
 
 function player:update(dt)
   if (self.alive) then
+    self.directionalForce = { x = 0, y = 0 }
     self:handleInput()
+    self.directionalForce = normalizeVec2(self.directionalForce, self.moveForce)
+    self.body:applyForce(self.directionalForce.x, self.directionalForce.y)
   end
   if self.body:getX() > love.graphics.getWidth() then
     self.body:setX(self.body:getX() - love.graphics.getWidth())
@@ -71,6 +75,7 @@ end
 
 function player:destroy()
   self.alive = false
+  self.body:setLinearDamping(1)
 end
 
 function player:handleCollisionPreSolve(other, collData)
@@ -84,15 +89,19 @@ end
 
 function player:handleInput()
   if love.keyboard.isDown('a') then
-    self.body:applyForce(-self.moveForce, 0)
+    self.directionalForce.x = self.directionalForce.x - 1
+    --self.body:applyForce(-self.moveForce, 0)
   end
   if love.keyboard.isDown('d') then
-    self.body:applyForce(self.moveForce, 0)
+    self.directionalForce.x = self.directionalForce.x + 1
+    --self.body:applyForce(self.moveForce, 0)
   end
   if love.keyboard.isDown('w') then
-    self.body:applyForce(0, -self.moveForce)
+    self.directionalForce.y = self.directionalForce.y - 1
+    --self.body:applyForce(0, -self.moveForce)
   end
   if love.keyboard.isDown('s') then
-    self.body:applyForce(0, self.moveForce)
+    self.directionalForce.y = self.directionalForce.y + 1
+    --self.body:applyForce(0, self.moveForce)
   end
 end

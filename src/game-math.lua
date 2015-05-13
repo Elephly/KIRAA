@@ -9,7 +9,7 @@ end
 -- Does not return value. Modifies vector parameter.
 function normalizeVec2(vector, value)
   local hyp = math.sqrt((vector.x * vector.x) + (vector.y * vector.y))
-  local newVector = {}
+  local newVector = { x = 0, y = 0 }
   if hyp > 0 then
     newVector.x = vector.x / (hyp / value)
     newVector.y = vector.y / (hyp / value)
